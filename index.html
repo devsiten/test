@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Spotify Meme Token</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{
+  margin:0;
+  font-family:'Montserrat', sans-serif;
+  background: linear-gradient(135deg,#FF3EB5,#9B5DE5,#FEE440);
+  color:#222;
+}
+section{padding:50px 20px;text-align:center;max-width:900px;margin:auto;}
+h1,h2{font-weight:800;}
+.btn{
+  background:#1DB954;
+  color:white;
+  padding:14px 26px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:700;
+  margin:5px;
+  display:inline-block;
+}
+img{max-width:100%;border-radius:14px;margin:20px 0;}
+.card{
+  background:white;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  max-width:500px;
+  margin:auto;
+}
+.gallery{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+</style>
+</head>
+<body>
+
+<section>
+<h1>SPOTIFY</h1>
+<p>Your new favorite chaos-powered meme token.</p>
+<a class='btn' href='https://pump.fun/coin/HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump'>Buy Now</a>
+<a class='btn' href='https://x.com/i/communities/1987214294996689034'>Join Community</a>
+</section>
+
+<section>
+<h2>About</h2>
+<img src="photo_2025-11-14_12-07-36.jpg">
+<p>Spotify Wrapped is always the most talked about event each December... fun meme coin energy.</p>
+</section>
+
+<section>
+<h2>The Lore</h2>
+<img src="photo_2025-11-14_12-07-38.jpg">
+<p>Inspired by the annual music recap... combines listening culture with meme virality.</p>
+</section>
+
+<section>
+<h2>Live Stats</h2>
+<div id="dex-stats" class="card">
+  <p>Price: <span id="price">Loading...</span></p>
+  <p>Market Cap: <span id="marketcap">Loading...</span></p>
+  <p>24h Volume: <span id="volume">Loading...</span></p>
+  <p>Liquidity: <span id="liquidity">Loading...</span></p>
+</div>
+
+<script>
+async function loadDexData() {
+  try {
+    const res = await fetch("https://api.dexscreener.com/latest/dex/pairs/solana/g62zdmyefqkuqdhrifn5fyyck2ioqvgpeyhe3pz6ocm8");
+    const data = await res.json();
+    const p = data.pair;
+
+    document.getElementById("price").innerText = "$" + Number(p.priceUsd).toFixed(6);
+    document.getElementById("marketcap").innerText = "$" + (p.fdv || "N/A");
+    document.getElementById("volume").innerText = "$" + p.volume.h24;
+    document.getElementById("liquidity").innerText = "$" + p.liquidity.usd;
+  } catch (e) {
+    console.log(e);
+  }
+}
+loadDexData();
+setInterval(loadDexData, 5000);
+</script>
+</section>
+
+<section>
+<h2>Meme Gallery</h2>
+<div class="gallery">
+  <img src="photo_2025-11-14_12-07-36.jpg">
+  <img src="photo_2025-11-14_12-07-38.jpg">
+  <img src="photo_2025-11-14_12-07-34.jpg">
+  <img src="photo_2025-11-14_12-07-30.jpg">
+</div>
+</section>
+
+<section>
+<h2>Where to Buy</h2>
+<div class="card">
+<a class='btn' href='https://pump.fun/coin/HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump'>Buy Token</a>
+<p>Contract: HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump</p>
+</div>
+</section>
+
+<footer style="padding:20px;text-align:center;font-size:14px;">
+© Spotify Meme Token. Fun only.
+</footer>
+
+</body>
+</html>

@@ -1,208 +1,279 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Spotify Wrapped ($SPOTIFY)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privosol – ZK Privacy on Solana</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <meta property="og:title" content="Privosol – ZK Privacy on Solana" />
+  <meta property="og:description" content="Welcome @apeape001 – Dive into zero-knowledge privacy. US-based, Solana-fast." />
+  <meta property="og:image" content="data:image/jpeg;base64,kP66JO794GBXGMPoWCBqwfRA7wSAqfZB1+HuoPVk0xho+An3baDQEizDYc9TncBtYX9swGWxvH3sr3iy6GoY8CgX/c4Z8cS0wTu4BqRPfgmO2JmWAtMOfxFeqkbYZ8Uzkp3DcHYXlqgTYDJ3WzCvzJvUa3Lz6G6Rc8IowtBkhtTY0UsGxT0OlFTdPP+kYLPq8rJ1GgeZqsZG7uhtVEihzopgiC5WgjSGIhJANDxlalv4q5FMiofFGLNF7g/cMYe1epA62FmfTW2tnab40rjQOXM6/+4DObKNFCPwBdkDektl3+A0hpAgnLcsYxKtRJGIPpI+E0mAKwv2rSlEqldhCFz7lm+2EA+LvFPoQFKK3UCq3cfaElzv0g7MGOG94XCwZjnzfDd+kp+0QL++rkVlakjnlojsFn0K3ZIAGQHjRAPLftMXPYEs1O0Cq0mAwyb+JHwPclyZ0pA4rQa0QB2ccSRHnFdV3j/rBAAPbWAAEAAAA0y0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 
-<style>
-  body {
-    background: linear-gradient(135deg, #0a1828, #0f2235, #0d2e3f);
-    color: #9be7ff;
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
-  }
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Inter:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.min.js"></script>
 
-  .title {
-    text-shadow: 0 0 15px #8ae1ff, 0 0 30px #5ad8ff;
-  }
-
-  .cool-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(150,250,255,0.4);
-    backdrop-filter: blur(6px);
-  }
-
-  .scanline::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(transparent, rgba(150,250,255,0.15), transparent);
-    animation: scan 4s linear infinite;
-  }
-
-  @keyframes scan {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
-  }
-</style>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:linear-gradient(135deg, #0a0a1a, #0f1a2e, #0a1a3e, #0f0f23);
+      color:#00eaff;
+      overflow-x:hidden;
+      font-family:'Inter',sans-serif;
+      position:relative;
+    }
+    .deep-void { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; opacity:0.15; z-index:-1; }
+    .soft-neon { text-shadow:0 0 8px rgba(0, 234, 255, 0.6), 0 0 16px rgba(0, 234, 255, 0.3); }
+    .terminal { background:rgba(0,0,0,0.6); border:1px solid rgba(0, 234, 255, 0.3); padding:1rem; font-family:'VT323',monospace; backdrop-filter:blur(12px); border-radius:12px; }
+    .privo-logo { font-family:'Orbitron',sans-serif; font-weight:900; }
+    .wave-bg { position:absolute; width:200%; height:120%; background:radial-gradient(circle at 50% 50%, rgba(0, 138, 255, 0.08) 0%, transparent 70%); animation:drift 20s ease-in-out infinite; }
+    @keyframes drift { 0%,100%{transform:translateX(-25%) translateY(-10%) rotate(0.5deg)} 50%{transform:translateX(-20%) translateY(-5%) rotate(-0.5deg)} }
+    .orb { width:120px; height:120px; background:radial-gradient(circle, #00eaff, #0088ff); border-radius:50%; position:relative; opacity:0; box-shadow:0 0 20px rgba(0, 234, 255, 0.4); }
+    .orb::after { content:attr(data-label); position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#000; font-weight:bold; font-size:0.9rem; opacity:0; }
+    .verified { color:#00eaff; text-shadow:0 0 6px rgba(0, 234, 255, 0.5); }
+  </style>
 </head>
-<body>
+
+<body class="text-cyan-300">
+
+<!-- CALM WAVE BACKGROUND -->
+<div class="wave-bg"></div>
+
+<!-- DEEP VOID (SLOW PARTICLES) -->
+<canvas class="deep-void" id="deep-void"></canvas>
 
 <!-- HERO -->
-<section class="min-h-screen flex flex-col items-center justify-center text-center relative">
-  <div class="scanline absolute inset-0 pointer-events-none"></div>
+<section id="hero" class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a1a3e]/30 to-transparent"></div>
 
-  <h1 class="title text-5xl sm:text-7xl font-extrabold">SPOTIFY WRAPPED</h1>
+  <!-- Mascot Image -->
+  <img 
+    src="data:image/jpeg;base64,kP66JO794GBXGMPoWCBqwfRA7wSAqfZB1+HuoPVk0xho+An3baDQEizDYc9TncBtYX9swGWxvH3sr3iy6GoY8CgX/c4Z8cS0wTu4BqRPfgmO2JmWAtMOfxFeqkbYZ8Uzkp3DcHYXlqgTYDJ3WzCvzJvUa3Lz6G6Rc8IowtBkhtTY0UsGxT0OlFTdPP+kYLPq8rJ1GgeZqsZG7uhtVEihzopgiC5WgjSGIhJANDxlalv4q5FMiofFGLNF7g/cMYe1epA62FmfTW2tnab40rjQOXM6/+4DObKNFCPwBdkDektl3+A0hpAgnLcsYxKtRJGIPpI+E0mAKwv2rSlEqldhCFz7lm+2EA+LvFPoQFKK3UCq3cfaElzv0g7MGOG94XCwZjnzfDd+kp+0QL++rkVlakjnlojsFn0K3ZIAGQHjRAPLftMXPYEs1O0Cq0mAwyb+JHwPclyZ0pA4rQa0QB2ccSRHnFdV3j/rBAAPbWAAEAAAA0y0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    alt="Privosol Mascot"
+    class="w-64 md:w-80 mb-8 opacity-0 drop-shadow-2xl"
+    id="mascot"
+  />
 
-  <p id="hero-text" class="opacity-0 mt-6 text-lg"></p>
+  <h1 class="privo-logo soft-neon text-7xl md:text-9xl mb-6 opacity-0" id="logo">PRIVOSOL</h1>
 
-  <button onclick="window.open('https://pump.fun/coin/HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump')" 
-    class="mt-8 px-10 py-4 rounded-full border border-cyan-300 text-cyan-200 hover:bg-cyan-200 hover:text-black transition-all">
-    BUY $SPOTIFY
+  <p id="live-time" class="text-sm opacity-0 mb-2"></p>
+
+  <p id="welcome" class="mt-4 text-lg opacity-0 text-center terminal p-3 max-w-md">
+    Welcome back,
+    <a href="https://x.com/apeape001" target="_blank" class="verified">@apeape001</a>
+    – ZK privacy starts here
+  </p>
+
+  <p id="geo" class="text-xs opacity-0 mt-2">US | Zero-Knowledge, Solana-Fast</p>
+
+  <button id="connect-hero" class="mt-10 px-10 py-4 border border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/10 hover:border-cyan-300 transition-all duration-500 text-lg font-medium rounded-full opacity-0 backdrop-blur-sm">
+    CONNECT WALLET
   </button>
-
-  <div id="live-ticker" class="mt-8 opacity-0 bg-black/30 px-6 py-4 rounded-lg text-sm"></div>
 </section>
 
-<!-- NARRATIVE -->
-<section class="min-h-[50vh] flex items-center justify-center px-6 text-center">
-  <p class="max-w-2xl text-xl leading-relaxed">
-    Spotify Wrapped is the most talked-about yearly recap across social media.  
-    $SPOTIFY frontruns the hype by capturing the meme wave of December sharing culture.  
-    A fun, community-driven token built around virality, personality, and yearly storytelling.
+<!-- LORE -->
+<section id="lore" class="min-h-screen flex items-center justify-center p-8 relative">
+  <p id="deep-lore" class="text-xl md:text-2xl max-w-3xl text-center opacity-0 leading-relaxed terminal p-6">
+    Privosol wraps your transactions in ZK proofs. Solana-speed, zero-knowledge security.<br>
+    Built for <span class="verified">@apeape001</span> and the US privacy movement.
   </p>
 </section>
 
-<!-- LIVE STATS -->
-<section class="min-h-[50vh] flex items-center justify-center p-8">
-  <div class="cool-card p-6 rounded-xl w-full max-w-md">
-    <h2 class="text-3xl font-bold text-cyan-200 mb-6 text-center">Live Stats</h2>
-
-    <div class="space-y-3 text-cyan-100 text-sm">
-      <div class="flex justify-between"><span>Price</span><span id="s-price">--</span></div>
-      <div class="flex justify-between"><span>24h Change</span><span id="s-change">--</span></div>
-      <div class="flex justify-between"><span>Liquidity</span><span id="s-liq">--</span></div>
-      <div class="flex justify-between"><span>24h Volume</span><span id="s-vol">--</span></div>
-      <div class="flex justify-between"><span>Market Cap</span><span id="s-mcap">--</span></div>
-    </div>
-  </div>
+<!-- FEATURES -->
+<section id="features" class="min-h-screen flex flex-col items-center justify-center gap-16 p-8 relative">
+  <h2 class="text-4xl soft-neon opacity-0" id="feat-title">ZK FEATURES</h2>
+  <div class="orb opacity-0" data-label="Zero-Knowledge Proofs"></div>
+  <div class="orb opacity-0" data-label="Solana Scalability"></div>
+  <div class="orb opacity-0" data-label="Anonymous Transactions"></div>
 </section>
 
-<!-- GALLERY -->
-<section class="min-h-screen p-8">
-  <h2 class="text-4xl text-center mb-10 text-cyan-200 font-bold">Wrapped Gallery</h2>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-5xl mx-auto">
-
-    <div class="cool-card overflow-hidden rounded-xl">
-      <img src="sandbox:/mnt/data/photo_2025-11-14_12-07-36.jpg" class="w-full h-auto">
-    </div>
-
-    <div class="cool-card overflow-hidden rounded-xl">
-      <img src="sandbox:/mnt/data/photo_2025-11-14_12-07-38.jpg" class="w-full h-auto">
-    </div>
-
-    <div class="cool-card overflow-hidden rounded-xl">
-      <img src="sandbox:/mnt/data/photo_2025-11-14_12-07-34.jpg" class="w-full h-auto">
-    </div>
-
-    <div class="cool-card overflow-hidden rounded-xl">
-      <img src="sandbox:/mnt/data/photo_2025-11-14_12-07-30.jpg" class="w-full h-auto">
-    </div>
-
-  </div>
+<!-- ROADMAP -->
+<section id="roadmap" class="min-h-screen flex overflow-x-auto snap-x snap-mandatory scrollbar-none p-8 gap-8">
+  <div class="card snap-center">Phase 1: Launch</div>
+  <div class="card snap-center">Phase 2: ZK Integration</div>
+  <div class="card snap-center">Phase 3: Mainnet</div>
+  <div class="card snap-center">Phase 4: US Adoption</div>
+  <div class="card snap-center">Phase 5: Global Scale</div>
 </section>
 
 <!-- COMMUNITY -->
-<section class="min-h-screen p-8 flex flex-col items-center">
+<section id="community" class="min-h-screen p-8 flex flex-col items-center">
+  <h2 class="text-4xl soft-neon mb-8 opacity-0">COMMUNITY DEPTHS</h2>
   <div id="tweets" class="space-y-4 w-full max-w-xl"></div>
-
-  <a href="https://x.com/i/communities/1987214294996689034" target="_blank"
-     class="cool-card mt-8 w-full max-w-md text-center py-4 rounded-lg border border-cyan-300">
-     Join Spotify Wrapped Community
-  </a>
+  <a href="https://x.com/apeape001" target="_blank" class="mt-8 terminal w-full max-w-md text-center py-4 opacity-0">Follow @apeape001 on X</a>
 </section>
 
-<!-- BUY -->
-<section class="min-h-[40vh] flex items-center justify-center p-8">
-  <div class="cool-card w-full max-w-md p-6 rounded-xl text-center">
-
-    <p class="text-sm mb-4 text-cyan-300 font-bold">
-      Contract Address:
-    </p>
-
-    <p class="break-all text-cyan-100 mb-6">
-      HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump
-    </p>
-
-    <a href="https://pump.fun/coin/HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump" target="_blank"
-      class="block w-full py-3 rounded-lg border border-cyan-300 text-cyan-200 hover:bg-cyan-200 hover:text-black transition">
-      Buy on Pump.fun
-    </a>
+<!-- CONNECT -->
+<section id="connect" class="min-h-screen flex items-center justify-center p-8">
+  <div class="terminal w-full max-w-md text-center opacity-0" id="connect-box">
+    <p class="mb-4 text-lg">Privosol Protocol – US Privacy Layer</p>
+    <p class="text-sm opacity-70">Connect your Solana wallet</p>
+    <button id="wallet-connect" class="mt-6 w-full py-3 border border-cyan-400/40 hover:bg-cyan-400/10 hover:border-cyan-300 transition-all duration-500 rounded-lg backdrop-blur-sm">
+      Connect Wallet
+    </button>
   </div>
 </section>
 
-<footer class="p-6 text-center text-xs text-cyan-300">
-  $SPOTIFY — Coolest meme of the year.
+<!-- FOOTER -->
+<footer class="p-8 text-center text-xs opacity-0" id="footer">
+  <p id="footer-time"></p>
+  <p class="mt-2">PRIVOSOL – Deep Privacy for Solana | Built for <a href="https://x.com/apeape001" class="verified">@apeape001</a> (US)</p>
+  <div class="flex justify-center gap-6 mt-4">
+    <a href="https://x.com/apeape001" target="_blank" class="social">X</a>
+    <div class="social">Discord</div>
+    <div class="social">Telegram</div>
+  </div>
 </footer>
 
+<!-- 3D ORB -->
+<canvas id="zk-orb" class="fixed bottom-8 right-8 w-16 h-16 pointer-events-none opacity-0"></canvas>
+
 <script>
-// Hero typing
-let lines=["> Loading your Wrapped...","> Syncing your top memes...","> $SPOTIFY ready."];
-let i=0,j=0,out="";
-function type(){
-  if(i<lines.length){
-    if(j<lines[i].length){
-      out+=lines[i][j];
-      j++; 
-      document.getElementById("hero-text").innerHTML=out+"_";
-      setTimeout(type,40);
-    } else {
-      i++; j=0; out="";
-      setTimeout(type,500);
+/* ====================== CALM CLOCK ====================== */
+function updateClock() {
+  const now = new Date();
+  const options = { timeZone: 'America/Chicago', hour: '2-digit', minute: '2-digit', hour12: true };
+  const timeStr = now.toLocaleTimeString('en-US', options);
+  const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const fullStr = `${timeStr} CST – ${dateStr}`;
+  document.getElementById('live-time').textContent = fullStr;
+  document.getElementById('footer-time').textContent = fullStr;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ====================== SLOW VOID PARTICLES ====================== */
+const canvas = document.getElementById('deep-void');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+const particles = [];
+for(let i=0; i<60; i++){
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3,
+    size: Math.random() * 1.5 + 0.5
+  });
+}
+function drawVoid() {
+  ctx.fillStyle = 'rgba(10,10,26,0.03)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = 'rgba(0, 234, 255, 0.6)';
+  particles.forEach(p => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0 || p.x>canvas.width) p.vx *= -1;
+    if(p.y<0 || p.y>canvas.height) p.vy *= -1;
+  });
+}
+setInterval(drawVoid, 50);
+
+/* ====================== CALM ANIMATIONS ====================== */
+gsap.registerPlugin(ScrollTrigger);
+
+// Hero Sequence
+const heroTL = gsap.timeline();
+heroTL
+  .to('#mascot', { opacity:1, y:0, duration:1.5, ease:'power2.out' }, 0.5)
+  .to('#logo', { opacity:1, scale:1, duration:1.8, ease:'elastic.out(1, 0.6)' }, 1)
+  .to('#live-time', { opacity:1, y:0, duration:1 }, 2)
+  .to('#welcome', { opacity:1, y:0, duration:1.2 }, 2.5)
+  .to('#geo', { opacity:1, y:0, duration:1 }, 2.8)
+  .to('#connect-hero', { opacity:1, y:0, duration:1.2, ease:'power2.out' }, 3.2);
+
+// Soft pulse on logo
+gsap.to('#logo', { textShadow: '0 0 12px rgba(0,234,255,0.8), 0 0 24px rgba(0,234,255,0.4)', duration:3, repeat:-1, yoyo:true, ease:'sine.inOut' });
+
+// Lore
+gsap.to('#deep-lore', {
+  scrollTrigger: { trigger:'#lore', start:'top 70%' },
+  opacity:1, y:0, duration:2, ease:'power2.out'
+});
+
+// Features
+gsap.utils.toArray('.orb').forEach((orb, i) => {
+  gsap.to(orb, {
+    scrollTrigger: { trigger:'#features', start:'top 60%' },
+    opacity:1, scale:1, duration:1.5, delay:i*0.3, ease:'back.out(1.4)',
+    onComplete: () => {
+      gsap.to(orb, { rotation:360, duration:20, repeat:-1, ease:'none' });
+      gsap.to(orb.querySelector('::after') || orb, { opacity:1, duration:1 });
     }
-  } else {
-    gsap.to("#live-ticker",{opacity:1,duration:1});
+  });
+});
+
+// Roadmap Cards
+gsap.utils.toArray('.card').forEach((card, i) => {
+  card.style = `min-width:300px; height:400px; background:rgba(0,0,0,0.5); border:1px solid rgba(0,234,255,0.3); display:flex; align-items:center; justify-content:center; font-size:1.5rem; border-radius:16px; backdrop-filter:blur(8px); opacity:0;`;
+  gsap.to(card, {
+    scrollTrigger: { trigger:'#roadmap', start:'top 80%' },
+    opacity:1, y:0, duration:1, delay:i*0.2, ease:'power2.out'
+  });
+});
+
+/* COMMUNITY TWEETS (CALM) */
+const tweets = ["Exploring ZK privacy with Privosol", "Solana + zero-knowledge = future", "Anonymous, fast, secure", "US-based privacy layer", "Join the deep dive"];
+let tweetIdx=0;
+function addTweet(){
+  const div = document.createElement('div');
+  div.className = 'terminal p-4 opacity-0 rounded-lg text-sm';
+  div.textContent = tweets[tweetIdx % tweets.length];
+  document.getElementById('tweets').prepend(div);
+  gsap.to(div, {opacity:1, y:0, duration:1.2, ease:'power2.out'});
+  tweetIdx++;
+  if(document.getElementById('tweets').children.length>5) {
+    const old = document.getElementById('tweets').lastChild;
+    gsap.to(old, {opacity:0, y:-20, duration:0.8, onComplete:()=>{old.remove();}});
   }
 }
-type();
+setInterval(addTweet, 5000); setTimeout(addTweet, 3000);
 
-// Live stats API
-async function stats(){
-  try{
-    const r=await fetch("https://api.dexscreener.com/latest/dex/pairs/solana/g62zdmyefqkuqdhrifn5fyyck2ioqvgpeyhe3pz6ocm8");
-    const d=await r.json();
-    const p=d.pair;
+/* CONNECT BOX */
+gsap.to('#connect-box', {
+  scrollTrigger: { trigger:'#connect', start:'top 70%' },
+  opacity:1, y:0, duration:1.5, ease:'power2.out'
+});
 
-    document.getElementById("live-ticker").innerHTML =
-      `$SPOTIFY: $${(+p.priceUsd).toFixed(7)} | 24h: ${p.priceChange.h24}% | MCap: $${p.marketCap}`;
+/* FOOTER */
+gsap.to('#footer', {
+  scrollTrigger: { trigger:'footer', start:'top 90%' },
+  opacity:1, duration:1.5
+});
 
-    document.getElementById("s-price").innerText = `$${(+p.priceUsd).toFixed(7)}`;
-    document.getElementById("s-change").innerText = `${p.priceChange.h24}%`;
-    document.getElementById("s-liq").innerText = `$${p.liquidity.usd}`;
-    document.getElementById("s-vol").innerText = `$${p.volume.h24}`;
-    document.getElementById("s-mcap").innerText = `$${p.marketCap}`;
-  }catch(e){}
+/* 3D ORB (CALM SPIN) */
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75,1,0.1,1000);
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('zk-orb'), alpha:true});
+renderer.setSize(64,64);
+const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+const material = new THREE.MeshBasicMaterial({color:0x00eaff, wireframe:true});
+const orb = new THREE.Mesh(geometry, material);
+scene.add(orb);
+camera.position.z = 2;
+function animateOrb(){ requestAnimationFrame(animateOrb); orb.rotation.y += 0.005; renderer.render(scene,camera); }
+animateOrb();
+gsap.to('#zk-orb', { opacity:0.7, duration:2, delay:4 });
+
+/* EASTER EGG: Type "calm" */
+let calmSeq = '';
+document.addEventListener('keydown', e => {
+  calmSeq += e.key.toLowerCase();
+  if(calmSeq.length > 4) calmSeq = calmSeq.slice(-4);
+  if(calmSeq === 'calm') { triggerCalmWave(); calmSeq = ''; }
+});
+function triggerCalmWave(){
+  gsap.to('body', { backgroundColor:'#0a0a2e', duration:2, yoyo:true, repeat:1 });
+  alert('Calm Mode Activated – ZK Serenity Unlocked');
 }
-stats(); setInterval(stats,8000);
 
-// Tweets
-const msgs=[
-  "Wrapped season = $SPOTIFY season",
-  "Added $SPOTIFY to my top tracks",
-  "$SPOTIFY is trending before Wrapped drops",
-  "Coolest meme of December",
-  "$SPOTIFY > your top artist"
-];
-let k=0;
-function addT(){
-  const d=document.createElement("div");
-  d.className="cool-card p-4 rounded-lg opacity-0";
-  d.textContent=msgs[k%msgs.length];
-  k++;
-  document.getElementById("tweets").prepend(d);
-  gsap.to(d,{opacity:1,y:0,duration:0.5});
-  if(document.getElementById("tweets").children.length>5){
-    document.getElementById("tweets").lastChild.remove();
-  }
-}
-addT(); setInterval(addT,3000);
+/* STYLES IN JS */
+document.head.insertAdjacentHTML('beforeend',`<style>
+.card{scroll-snap-align:center;}
+.social{width:36px;height:36px;background:rgba(0,234,255,0.1);color:#00eaff;border:1px solid rgba(0,234,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.3s;}
+.social:hover{background:rgba(0,234,255,0.2);transform:scale(1.1);}
+</style>`);
 </script>
-
 </body>
 </html>

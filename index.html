@@ -1,90 +1,79 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Spotify Wrapped ($SPOTIFY)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Spotify Wrapped ($SPOTIFY)</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Inter:wght@400;700&family=VT323&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background:linear-gradient(135deg, #000, #1a1a2e, #241332);
-      color:#ff4ef8;
-      overflow-x:hidden;
-      font-family:'Inter',sans-serif;
-    }
+<style>
+  body {
+    background: linear-gradient(135deg, #0a1828, #0f2235, #0d2e3f);
+    color: #9be7ff;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
 
-    .neon {
-      text-shadow:0 0 10px #ff4ef8, 0 0 20px #ff4ef8;
-    }
+  .title {
+    text-shadow: 0 0 15px #8ae1ff, 0 0 30px #5ad8ff;
+  }
 
-    .playlist-bg {
-      position:fixed; top:0; left:0;
-      width:100%; height:100%;
-      pointer-events:none;
-      opacity:0.1;
-    }
+  .cool-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(150,250,255,0.4);
+    backdrop-filter: blur(6px);
+  }
 
-    .terminal {
-      background:#000;
-      border:2px solid #ff4ef8;
-      padding:1rem;
-      font-family:'VT323',monospace;
-    }
+  .scanline::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent, rgba(150,250,255,0.15), transparent);
+    animation: scan 4s linear infinite;
+  }
 
-    .scanline::before {
-      content:''; position:absolute; inset:0;
-      background:linear-gradient(transparent,rgba(255,80,240,0.08),transparent);
-      animation:scan 3s linear infinite;
-    }
-
-    @keyframes scan {
-      0% {transform:translateY(-100%);}
-      100% {transform:translateY(100%);}
-    }
-
-    .social {
-      width:40px;height:40px;background:#ff4ef8;color:#000;
-      border-radius:50%;display:flex;align-items:center;justify-content:center;
-      cursor:pointer;text-decoration:none;
-    }
-  </style>
+  @keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+</style>
 </head>
 <body>
 
-<canvas class="playlist-bg" id="playlist"></canvas>
-
 <!-- HERO -->
-<section id="hero" class="relative min-h-screen flex flex-col items-center justify-center text-center">
-  <div class="scanline absolute inset-0"></div>
+<section class="min-h-screen flex flex-col items-center justify-center text-center relative">
+  <div class="scanline absolute inset-0 pointer-events-none"></div>
 
-  <h1 class="wrapped-logo neon text-5xl sm:text-7xl md:text-8xl mb-6">SPOTIFY WRAPPED</h1>
+  <h1 class="title text-5xl sm:text-7xl font-extrabold">SPOTIFY WRAPPED</h1>
 
-  <p id="terminal-line" class="text-lg sm:text-xl opacity-0"></p>
+  <p id="hero-text" class="opacity-0 mt-6 text-lg"></p>
 
-  <button id="buy-hero"
-    onclick="window.open('https://pump.fun/coin/HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump')"
-    class="mt-8 px-8 py-4 border-2 border-pink-400 text-pink-400 hover:bg-pink-400 hover:text-black transition text-lg font-bold rounded-full">
-    PLAY $SPOTIFY
+  <button onclick="window.open('https://pump.fun/coin/HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump')" 
+    class="mt-8 px-10 py-4 rounded-full border border-cyan-300 text-cyan-200 hover:bg-cyan-200 hover:text-black transition-all">
+    BUY $SPOTIFY
   </button>
 
-  <div id="real-ticker" class="mt-6 text-sm opacity-0 bg-black/60 p-4 rounded-lg w-auto space-y-1"></div>
+  <div id="live-ticker" class="mt-8 opacity-0 bg-black/30 px-6 py-4 rounded-lg text-sm"></div>
+</section>
+
+<!-- NARRATIVE -->
+<section class="min-h-[50vh] flex items-center justify-center px-6 text-center">
+  <p class="max-w-2xl text-xl leading-relaxed">
+    Spotify Wrapped is the most talked-about yearly recap across social media.  
+    $SPOTIFY frontruns the hype by capturing the meme wave of December sharing culture.  
+    A fun, community-driven token built around virality, personality, and yearly storytelling.
+  </p>
 </section>
 
 <!-- LIVE STATS -->
-<section id="stats" class="min-h-[60vh] flex items-center justify-center p-8 relative">
-  <div class="scanline absolute inset-0"></div>
+<section class="min-h-[50vh] flex items-center justify-center p-8">
+  <div class="cool-card p-6 rounded-xl w-full max-w-md">
+    <h2 class="text-3xl font-bold text-cyan-200 mb-6 text-center">Live Stats</h2>
 
-  <div class="w-full max-w-md bg-black/40 p-6 rounded-xl border border-pink-400">
-    <h2 class="text-3xl font-bold neon text-center mb-6">Live $SPOTIFY Stats</h2>
-
-    <div id="stats-card" class="grid gap-2 text-sm sm:text-base">
+    <div class="space-y-3 text-cyan-100 text-sm">
       <div class="flex justify-between"><span>Price</span><span id="s-price">--</span></div>
       <div class="flex justify-between"><span>24h Change</span><span id="s-change">--</span></div>
       <div class="flex justify-between"><span>Liquidity</span><span id="s-liq">--</span></div>
@@ -94,236 +83,126 @@
   </div>
 </section>
 
-<!-- LORE -->
-<section id="recap" class="min-h-screen flex items-center justify-center p-8 relative">
-  <div class="scanline absolute inset-0"></div>
-
-  <p id="lore" class="text-2xl max-w-2xl text-center opacity-0 neon"></p>
-</section>
-
 <!-- GALLERY -->
-<section id="gallery" class="min-h-screen p-8 flex flex-col items-center justify-center relative">
-  <div class="scanline absolute inset-0"></div>
+<section class="min-h-screen p-8">
+  <h2 class="text-4xl text-center mb-10 text-cyan-200 font-bold">Wrapped Gallery</h2>
 
-  <h2 class="text-4xl sm:text-5xl font-bold neon mb-10">Wrapped Meme Gallery</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-5xl mx-auto">
 
-  <div class="grid gap-8 w-full max-w-5xl grid-cols-1 sm:grid-cols-2">
-    <div class="rounded-xl overflow-hidden shadow-xl border border-pink-400 bg-black/40 gallery-card">
+    <div class="cool-card overflow-hidden rounded-xl">
       <img src="sandbox:/mnt/data/photo_2025-11-14_12-07-36.jpg" class="w-full h-auto">
     </div>
 
-    <div class="rounded-xl overflow-hidden shadow-xl border border-pink-400 bg-black/40 gallery-card">
+    <div class="cool-card overflow-hidden rounded-xl">
       <img src="sandbox:/mnt/data/photo_2025-11-14_12-07-38.jpg" class="w-full h-auto">
     </div>
 
-    <div class="rounded-xl overflow-hidden shadow-xl border border-pink-400 bg-black/40 gallery-card">
+    <div class="cool-card overflow-hidden rounded-xl">
       <img src="sandbox:/mnt/data/photo_2025-11-14_12-07-34.jpg" class="w-full h-auto">
     </div>
 
-    <div class="rounded-xl overflow-hidden shadow-xl border border-pink-400 bg-black/40 gallery-card">
+    <div class="cool-card overflow-hidden rounded-xl">
       <img src="sandbox:/mnt/data/photo_2025-11-14_12-07-30.jpg" class="w-full h-auto">
     </div>
+
   </div>
 </section>
 
 <!-- COMMUNITY -->
-<section id="community" class="min-h-screen p-8 flex flex-col items-center">
+<section class="min-h-screen p-8 flex flex-col items-center">
   <div id="tweets" class="space-y-4 w-full max-w-xl"></div>
 
   <a href="https://x.com/i/communities/1987214294996689034" target="_blank"
-    class="mt-8 terminal w-full max-w-md text-center py-4">
-    Join Spotify Wrapped Community
+     class="cool-card mt-8 w-full max-w-md text-center py-4 rounded-lg border border-cyan-300">
+     Join Spotify Wrapped Community
   </a>
 </section>
 
 <!-- BUY -->
-<section id="buy" class="min-h-screen flex items-center justify-center p-8">
-  <div class="terminal w-full max-w-md text-center">
+<section class="min-h-[40vh] flex items-center justify-center p-8">
+  <div class="cool-card w-full max-w-md p-6 rounded-xl text-center">
 
-    <p class="mb-4">Contract:
-      <span class="break-all">HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump</span>
+    <p class="text-sm mb-4 text-cyan-300 font-bold">
+      Contract Address:
     </p>
 
-    <p>You pay: 0.1 SOL</p>
-    <p>You get: ~987,000 $SPOTIFY</p>
+    <p class="break-all text-cyan-100 mb-6">
+      HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump
+    </p>
 
     <a href="https://pump.fun/coin/HzTpFozNhZ51Vra4jDg8J5uYxvRpA6dv7vey2M4tpump" target="_blank"
-      class="mt-4 w-full py-2 border border-pink-400 hover:bg-pink-400 hover:text-black transition block">
+      class="block w-full py-3 rounded-lg border border-cyan-300 text-cyan-200 hover:bg-cyan-200 hover:text-black transition">
       Buy on Pump.fun
     </a>
-
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="p-8 text-center text-sm">
-  <p>$SPOTIFY – The Ultimate Wrapped Frontrun</p>
+<footer class="p-6 text-center text-xs text-cyan-300">
+  $SPOTIFY — Coolest meme of the year.
 </footer>
 
-<!-- VINYL -->
-<canvas id="vinyl" class="fixed bottom-8 right-8 w-16 h-16 pointer-events-none opacity-0"></canvas>
-
 <script>
-/* Background Emoji Rain */
-const canvas = document.getElementById('playlist');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-
-const icons = ['🎵','🎧','🎤','✨'];
-const fontSize = 20;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(1);
-
-function drawRain() {
-  ctx.fillStyle = 'rgba(0,0,0,0.05)';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle = '#ff4ef8';
-  ctx.font = fontSize + 'px Arial';
-
-  for(let i=0;i<drops.length;i++){
-    const text = icons[Math.floor(Math.random()*icons.length)];
-    ctx.fillText(text, i*fontSize, drops[i]*fontSize);
-    if(drops[i]*fontSize > canvas.height && Math.random()>0.975) drops[i]=0;
-    drops[i]++;
-  }
-}
-setInterval(drawRain,50);
-
-/* Terminal Hero Typing */
-const heroLines=[
-  "> Loading your Wrapped...",
-  "> $SPOTIFY frontrunning the recap",
-  "> Viral by December."
-];
-let li=0, ci=0, buffer="";
-function typeHero(){
-  if(li<heroLines.length){
-    if(ci<heroLines[li].length){
-      buffer+=heroLines[li][ci];
-      ci++;
-      document.getElementById("terminal-line").innerHTML = buffer + "_";
-      setTimeout(typeHero,50);
+// Hero typing
+let lines=["> Loading your Wrapped...","> Syncing your top memes...","> $SPOTIFY ready."];
+let i=0,j=0,out="";
+function type(){
+  if(i<lines.length){
+    if(j<lines[i].length){
+      out+=lines[i][j];
+      j++; 
+      document.getElementById("hero-text").innerHTML=out+"_";
+      setTimeout(type,40);
     } else {
-      li++; ci=0; buffer="";
-      setTimeout(typeHero,600);
+      i++; j=0; out="";
+      setTimeout(type,500);
     }
   } else {
-    gsap.to("#real-ticker",{opacity:1});
+    gsap.to("#live-ticker",{opacity:1,duration:1});
   }
 }
-gsap.delayedCall(1,typeHero);
+type();
 
-/* Fetch Live Stats (No Dex UI) */
-async function loadStats(){
+// Live stats API
+async function stats(){
   try{
-    const pair="g62zdmyefqkuqdhrifn5fyyck2ioqvgpeyhe3pz6ocm8";
-    const res=await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${pair}`);
-    const data=await res.json();
-    const p=data.pair;
+    const r=await fetch("https://api.dexscreener.com/latest/dex/pairs/solana/g62zdmyefqkuqdhrifn5fyyck2ioqvgpeyhe3pz6ocm8");
+    const d=await r.json();
+    const p=d.pair;
 
-    if(!p) return;
+    document.getElementById("live-ticker").innerHTML =
+      `$SPOTIFY: $${(+p.priceUsd).toFixed(7)} | 24h: ${p.priceChange.h24}% | MCap: $${p.marketCap}`;
 
-    const price = parseFloat(p.priceUsd || 0);
-    const change = p.priceChange?.h24 ?? 0;
-
-    const liq = p.liquidity?.usd ?? 0;
-    const vol = p.volume?.h24 ?? 0;
-    const mcap = p.marketCap ?? 0;
-
-    // hero ticker
-    document.getElementById("real-ticker").innerHTML = `
-      <div>$SPOTIFY: $${price.toFixed(7)}</div>
-      <div class="${change>=0?'text-green-400':'text-red-400'}">
-        24h: ${change>=0?'+':''}${change.toFixed(2)}%
-      </div>
-      <div>Liq: $${liq.toLocaleString()}</div>
-      <div>Vol: $${vol.toLocaleString()}</div>
-    `;
-
-    // stats card
-    document.getElementById("s-price").textContent=`$${price.toFixed(7)}`;
-    document.getElementById("s-change").textContent=
-      `${change>=0?'+':''}${change.toFixed(2)}%`;
-    document.getElementById("s-change").className=
-      change>=0 ? "text-green-400" : "text-red-400";
-
-    document.getElementById("s-liq").textContent=`$${liq.toLocaleString()}`;
-    document.getElementById("s-vol").textContent=`$${vol.toLocaleString()}`;
-    document.getElementById("s-mcap").textContent=
-      mcap ? `$${mcap.toLocaleString()}` : "N/A";
-
-  } catch{}
+    document.getElementById("s-price").innerText = `$${(+p.priceUsd).toFixed(7)}`;
+    document.getElementById("s-change").innerText = `${p.priceChange.h24}%`;
+    document.getElementById("s-liq").innerText = `$${p.liquidity.usd}`;
+    document.getElementById("s-vol").innerText = `$${p.volume.h24}`;
+    document.getElementById("s-mcap").innerText = `$${p.marketCap}`;
+  }catch(e){}
 }
-loadStats();
-setInterval(loadStats,10000);
+stats(); setInterval(stats,8000);
 
-/* LORE Text */
-gsap.timeline({
-  scrollTrigger:{trigger:"#recap",start:"top 70%"}
-})
-.to("#lore",{opacity:1})
-.to("#lore",{text:{
-  value:"Spotify Wrapped drops end of November – the biggest viral moment of the year. $SPOTIFY frontruns the hype. Wrapped season means pumping season. 🎵🚀"
-},duration:5});
-
-/* Gallery Fade */
-gsap.utils.toArray(".gallery-card").forEach(card=>{
-  gsap.from(card,{
-    scrollTrigger:{trigger:card,start:"top 85%"},
-    opacity:0,y:40,duration:0.8
-  });
-});
-
-/* Community Tweets */
-const quotes=[
-  "Added $SPOTIFY to my Wrapped playlist.",
-  "$SPOTIFY running before Wrapped even drops.",
-  "Wrapped season = $SPOTIFY season.",
-  "$SPOTIFY headed for the charts.",
-  "My top artist is $SPOTIFY this year."
+// Tweets
+const msgs=[
+  "Wrapped season = $SPOTIFY season",
+  "Added $SPOTIFY to my top tracks",
+  "$SPOTIFY is trending before Wrapped drops",
+  "Coolest meme of December",
+  "$SPOTIFY > your top artist"
 ];
-let qi=0;
-function addTweet(){
-  const div=document.createElement("div");
-  div.className="terminal p-4 opacity-0 bg-black/40 rounded-lg";
-  div.textContent=quotes[qi%quotes.length];
-  qi++;
-
-  const list=document.getElementById("tweets");
-  list.prepend(div);
-  gsap.to(div,{opacity:1,duration:0.6});
-
-  if(list.children.length>5){
-    const last=list.lastChild;
-    gsap.to(last,{opacity:0,y:20,duration:0.4,onComplete:()=>last.remove()});
+let k=0;
+function addT(){
+  const d=document.createElement("div");
+  d.className="cool-card p-4 rounded-lg opacity-0";
+  d.textContent=msgs[k%msgs.length];
+  k++;
+  document.getElementById("tweets").prepend(d);
+  gsap.to(d,{opacity:1,y:0,duration:0.5});
+  if(document.getElementById("tweets").children.length>5){
+    document.getElementById("tweets").lastChild.remove();
   }
 }
-setInterval(addTweet,4000); addTweet();
-
-/* Vinyl Spinner */
-const vcanvas=document.getElementById("vinyl");
-const vscene=new THREE.Scene();
-const vcam=new THREE.PerspectiveCamera(75,1,0.1,1000);
-const vrender=new THREE.WebGLRenderer({canvas:vcanvas,alpha:true});
-vrender.setSize(64,64);
-const vinyl=new THREE.Mesh(
-  new THREE.CylinderGeometry(0.5,0.5,0.1,32),
-  new THREE.MeshBasicMaterial({color:0xff4ef8})
-);
-vscene.add(vinyl);
-vcam.position.z=2;
-function spin(){
-  requestAnimationFrame(spin);
-  vinyl.rotation.z+=0.05;
-  vrender.render(vscene,vcam);
-}
-spin();
-document.getElementById("buy-hero").addEventListener("mouseenter",()=>{
-  gsap.to("#vinyl",{opacity:1});
-});
-document.getElementById("buy-hero").addEventListener("mouseleave",()=>{
-  gsap.to("#vinyl",{opacity:0});
-});
+addT(); setInterval(addT,3000);
 </script>
+
 </body>
 </html>
